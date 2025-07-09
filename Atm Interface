@@ -1,0 +1,95 @@
+<div class="container hidden" id="atmScreen">
+  <h2>Welcome to MyBank</h2>
+  <input type="number" id="amount" placeholder="Enter Amount ₹" /><br>
+  <button onclick="checkBalance()">Check Balance</button>
+  <button onclick="deposit()">Deposit</button>
+  <button onclick="toggleWithdraw()">Withdraw</button>
+  <button onclick="logout()">Logout</button>
+
+  <div id="withdrawSection" class="hidden">
+    <input type="password" id="withdrawPin" placeholder="Re-enter PIN" maxlength="4" /><br>
+    <input type="number" id="withdrawAmount" placeholder="Withdraw Amount ₹" /><br>
+    <button onclick="confirmWithdraw()">Confirm Withdraw</button>
+  </div>
+
+  <div class="output" id="atmOutput"></div>
+  <div class="footer">Transactions Secured • MyBank</div>
+</div>
+
+<script>
+  const correctCard = "1111222233334444";
+  const correctPin = "1234";
+  let balance = 5000;
+
+  function login() {
+    const card = document.getElementById("cardNumber").value;
+    const pin = document.getElementById("pin").value;
+    const message = document.getElementById("loginMessage");
+
+    if (card === correctCard && pin === correctPin) {
+      document.getElementById("loginScreen").classList.add("hidden");
+      document.getElementById("atmScreen").classList.remove("hidden");
+      document.getElementById("atmOutput").innerHTML = `<span class="success">Login Successful</span>`;
+    } else {
+      message.innerHTML = `<span class="error">Invalid Card or PIN</span>`;
+    }
+  }
+
+  function checkBalance() {
+    document.getElementById("atmOutput").innerHTML =
+      `<span class="success">Your Balance: ₹${balance}</span>`;
+  }
+
+  function deposit() {
+    const amount = parseFloat(document.getElementById("amount").value);
+    if (amount > 0) {
+      balance += amount;
+      document.getElementById("atmOutput").innerHTML =
+        `<span class="success">₹${amount} Deposited. New Balance: ₹${balance}</span>`;
+    } else {
+      document.getElementById("atmOutput").innerHTML =
+        `<span class="error">Enter a valid deposit amount.</span>`;
+    }
+  }
+
+  function toggleWithdraw() {
+    const section = document.getElementById("withdrawSection");
+    section.classList.toggle("hidden");
+    document.getElementById("atmOutput").innerHTML = "";
+  }
+
+  function confirmWithdraw() {
+    const enteredPin = document.getElementById("withdrawPin").value;
+    const amount = parseFloat(document.getElementById("withdrawAmount").value);
+
+    if (enteredPin !== correctPin) {
+      document.getElementById("atmOutput").innerHTML =
+        `<span class="error">Incorrect PIN. Withdrawal Failed.</span>`;
+      return;
+    }
+
+    if (amount > 0 && amount <= balance) {
+      balance -= amount;
+      document.getElementById("atmOutput").innerHTML =
+        `<span class="success">Thanks! ₹${amount} Withdrawn. Remaining Balance: ₹${balance}</span>`;
+      document.getElementById("withdrawSection").classList.add("hidden");
+    } else {
+      document.getElementById("atmOutput").innerHTML =
+        `<span class="error">Invalid amount or insufficient balance.</span>`;
+    }
+  }
+
+  function logout() {
+    document.getElementById("cardNumber").value = "";
+    document.getElementById("pin").value = "";
+    document.getElementById("loginMessage").innerHTML = "";
+    document.getElementById("atmOutput").innerHTML = "";
+
+    document.getElementById("withdrawSection").classList.add("hidden");
+    document.getElementById("atmScreen").classList.add("hidden");
+    document.getElementById("loginScreen").classList.remove("hidden");
+  }
+</script>
+
+</body>
+</html>
